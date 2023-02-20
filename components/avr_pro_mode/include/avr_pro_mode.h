@@ -31,9 +31,10 @@
 
 #include "logger.h"
 
-#define TXD_PIN (GPIO_NUM_4)
-#define RXD_PIN (GPIO_NUM_5)
-#define RESET_PIN (GPIO_NUM_19)
+#define TXD_PIN (GPIO_NUM_43)
+#define RXD_PIN (GPIO_NUM_44)
+//#define RESET_PIN (GPIO_NUM_16) // test Arduino Mega
+#define RESET_PIN (GPIO_NUM_2)
 #define HIGH 1
 #define LOW 0
 
@@ -44,7 +45,7 @@
 #define MAX_DELAY_MS 1000
 
 #define PAGE_SIZE_MAX 24 * 1024
-#define BLOCK_SIZE 128
+#define BLOCK_SIZE 256
 
 static const int RX_BUF_SIZE = 1024;
 
@@ -68,6 +69,7 @@ void endConn(void);
 
 //Get in sync with client MCU
 int getSync(void);
+int stk500v2GetSync(void);
 
 //Set the STK500 programming parameters for the communication
 int setProgParams(void);
@@ -86,6 +88,14 @@ int execCmd(char cmd);
 
 //Set the STK500-defined & client device parameters
 int execParam(char cmd, char *params, int count);
+
+//Send a STK500v2 message
+int sendSTK500v2Message(char* msg, uint16_t count);
+int sendSTK500v2MessageWithData(char* msg, uint16_t msg_count, char* data, uint16_t data_count);
+int getSTK500v2Response(char* respBuffer, uint16_t* bufferSize);
+int stk500v2LoadAddress(uint32_t addr);
+int stk500v2LeaveProgrammingMode(void);
+int stk500v2EnterProgrammingMode(void);
 
 //UART send data to client MCU & wait for response
 int sendBytes(char *bytes, int count);

@@ -14,6 +14,7 @@ int compare(uint8_t page[], uint8_t block[], int offset);
 
 //UART write the flash memory address of the client MCU with the data 
 int flashPage(char *address, char *data);
+int stk500v2FlashPage(uint32_t address, char *data);
 
 /**
  * @brief Write the code into the flash memory of the client MCU
@@ -28,6 +29,8 @@ int flashPage(char *address, char *data);
  */
 esp_err_t writeTask(uint8_t page[], int block_count);
 
+esp_err_t stk500v2WriteTask(uint8_t page[], int block_count);
+
 /**
  * @brief Read the flash memory of the client MCU, for verification
  * 
@@ -40,5 +43,6 @@ esp_err_t writeTask(uint8_t page[], int block_count);
  * @return ESP_OK - success, ESP_FAIL - failed
  */
 esp_err_t readTask(uint8_t page[], int block_count);
+esp_err_t stk500v2ReadTask(uint8_t page[], int block_count);
 
 #endif
