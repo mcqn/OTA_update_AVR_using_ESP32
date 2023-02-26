@@ -125,7 +125,7 @@ int stk500v2GetSync(void)
             return 1;
         }
     }
-    return 1;
+    return 0;
 }
 
 int stk500v2EnterProgrammingMode(void)
