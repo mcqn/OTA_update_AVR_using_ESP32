@@ -149,6 +149,14 @@ esp_err_t stk500v2WriteTask(uint8_t page[], int block_count)
                 loadAddress += BLOCK_SIZE/2;
             }
         }
+        else
+        {
+            return ESP_FAIL;
+        }
+    }
+    else
+    {
+        return ESP_FAIL;
     }
 
     return ESP_OK;
