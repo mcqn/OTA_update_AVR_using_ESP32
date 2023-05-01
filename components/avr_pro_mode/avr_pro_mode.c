@@ -114,15 +114,22 @@ int stk500v2GetSync(void)
 {
     logI(TAG_AVR_PRO, "%s", __FUNCTION__);
     char b[] = { 0x01 };
-    if (sendSTK500v2Message(b, 1))
+    int tries = 0;
+    while (tries++ < 5)
     {
-        // Wait for our response
-        char resp[11];
-        uint16_t size = 11;
-        if (getSTK500v2Response(resp, &size))
+        // Clear any previous data from the receive buffer first
+        uart_flush(UART_NUM_1);
+        if (sendSTK500v2Message(b, 1))
         {
-            // Got response
-            return 1;
+            // Wait for our response
+            char resp[11];
+            uint16_t size = 11;
+            if (getSTK500v2Response(resp, &size))
+            {
+                // Got response
+                logI(TAG_AVR_PRO, "got sync on attempt %d", tries);
+                return 1;
+            }
         }
     }
     return 0;
@@ -318,7 +325,8 @@ int getSTK500v2Response(char* respBuffer, uint16_t* bufferSize)
             // Leading byte is correct, check the sequence number
             // It'll be one less than gMsgSequenceNumber because that will have been
             // incremented ready for the next message
-            if (header[1]+1 == gMsgSequenceNumber)
+            // Need to cast it so we handle wrapping properly
+            if ((uint8_t)(header[1]+1) == gMsgSequenceNumber)
             {
                 // It's a response to the right message, get the size
                 uint16_t size = header[2] << 8 | header[3];
@@ -355,7 +363,7 @@ int getSTK500v2Response(char* respBuffer, uint16_t* bufferSize)
             }
             else
             {
-                logE(TAG_AVR_PRO, "Incorrect sequence number.  Expected %d, got %d", gMsgSequenceNumber-1, header[1]);
+                logE(TAG_AVR_PRO, "Incorrect sequence number.  Expected %d, got %d", (uint8_t)(gMsgSequenceNumber-1), header[1]);
             }
         }
         else

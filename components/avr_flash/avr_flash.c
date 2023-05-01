@@ -126,7 +126,7 @@ esp_err_t stk500v2WriteTask(uint8_t page[], int block_count)
         {
             while (block_count != 0)
             {
-                logD(TAG_AVR_FLASH, "Blocks left: %d \n", block_count);
+                logD(TAG_AVR_FLASH, "\nBlocks left: %d", block_count);
                 memset(block, '\0', BLOCK_SIZE);
                 int block_index = 0;
 
@@ -144,7 +144,6 @@ esp_err_t stk500v2WriteTask(uint8_t page[], int block_count)
 
                 page_start += BLOCK_SIZE;
                 block_count--;
-
                 // BLOCK_SIZE is in bytes, address is in words
                 loadAddress += BLOCK_SIZE/2;
             }

@@ -36,7 +36,11 @@ esp_err_t hexFileParser(char *filepath, uint8_t page[], int *block_count)
         char curr_line[64], prev_line[64];
 
         fgets(curr_line, sizeof(curr_line), f);
-        char *pos = strchr(curr_line, '\n');
+        char* pos = curr_line;
+        while ((*pos != '\r') && (*pos != '\n') && (*pos != '\0') && (pos - curr_line < 64))
+        {
+            pos++;
+        }
 
         if (strcmp(prev_line, curr_line) == 0)
         {
@@ -48,13 +52,13 @@ esp_err_t hexFileParser(char *filepath, uint8_t page[], int *block_count)
             *pos = '\0';
         }
 
-        char buff[strlen(curr_line) - 1];
+        char buff[strlen(curr_line)];
         strcpy(buff, curr_line);
 
         if (strlen(buff) > 12)
         {
             int start = 9;
-            int end = strlen(buff) - 4;
+            int end = strlen(buff) - 3;
             int size = (end - start) + 1;
 
             char raw_data[size];
@@ -68,9 +72,13 @@ esp_err_t hexFileParser(char *filepath, uint8_t page[], int *block_count)
                 byte_buff[1] = raw_data[i + 1];
                 page[idx] = strtol(byte_buff, 0, 16);
                 idx++;
+                if (idx >= PAGE_SIZE_MAX)
+                {
+                    fclose(f);
+                    return EMSGSIZE;
+                }
             }
         }
-
         strcpy(prev_line, curr_line);
     }
 
@@ -81,8 +89,9 @@ esp_err_t hexFileParser(char *filepath, uint8_t page[], int *block_count)
     }
 
     //ESP_LOG_BUFFER_HEXDUMP("Page: ", page, sizeof(page), ESP_LOG_DEBUG);
-    *block_count = (idx - 1) / 128;
+    *block_count = (idx) / 128;
     logD(TAG_HEX_PARSER, "Block count: %d", *block_count);
+    fclose(f);
 
     return ESP_OK;
 }
