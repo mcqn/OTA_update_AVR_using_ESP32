@@ -433,7 +433,7 @@ int waitForSerialData(int dataCount, int timeout)
             return length;
         }
         vTaskDelay(250 / portTICK_PERIOD_MS);
-        timer++;
+        timer+=250;
     }
     return 0;
 }
