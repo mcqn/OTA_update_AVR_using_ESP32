@@ -3,6 +3,14 @@
 
 #include "avr_pro_mode.h"
 
+// Error codes from the flashing
+#define EFLASH_FAIL 100
+#define EPROGMODE_FAIL  101
+#define ESYNC_FAIL  102
+#define EREAD_FAIL  103
+#define EVERIFY_FAIL    104
+#define ELOAD_ADDR_FAIL 105
+
 //Increment the memory address for the next write operation
 void incrementLoadAddress(char *loadAddress);
 

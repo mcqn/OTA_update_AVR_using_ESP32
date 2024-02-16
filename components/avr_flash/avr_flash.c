@@ -139,7 +139,7 @@ esp_err_t stk500v2WriteTask(uint8_t page[], int block_count)
 
                 if (!stk500v2FlashPage(loadAddress, block))
                 {
-                    return ESP_FAIL;
+                    return -EFLASH_FAIL;
                 }
 
                 page_start += BLOCK_SIZE;
@@ -150,12 +150,12 @@ esp_err_t stk500v2WriteTask(uint8_t page[], int block_count)
         }
         else
         {
-            return ESP_FAIL;
+            return -EPROGMODE_FAIL;
         }
     }
     else
     {
-        return ESP_FAIL;
+        return -ESYNC_FAIL;
     }
 
     return ESP_OK;
@@ -221,7 +221,7 @@ esp_err_t stk500v2ReadTask(uint8_t page[], int block_count)
                         logI(TAG_AVR_FLASH, "%s", "Read Success");
                         if (memcmp(&page[offset], &block[2], BLOCK_SIZE))
                         {
-                            return ESP_FAIL;
+                            return -EVERIFY_FAIL;
                         }
 
                         offset += BLOCK_SIZE;
@@ -230,14 +230,14 @@ esp_err_t stk500v2ReadTask(uint8_t page[], int block_count)
                 else
                 {
                     logE(TAG_AVR_FLASH, "%s", "Failed to read page");
-                    return ESP_FAIL;
+                    return -EREAD_FAIL;
                 }
             }
         }
         else
         {
             logE(TAG_AVR_FLASH, "%s", "Failed to load address for read");
-            return ESP_FAIL;
+            return -ELOAD_ADDR_FAIL;
         }
 
         // BLOCK_SIZE is in bytes, address is in words

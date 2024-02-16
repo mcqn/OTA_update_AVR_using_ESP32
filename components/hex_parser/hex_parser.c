@@ -28,7 +28,7 @@ esp_err_t hexFileParser(char *filepath, uint8_t page[], int *block_count)
     if (f == NULL)
     {
         logE(TAG_HEX_PARSER, "%s",  "Failed to open file for reading");
-        return ESP_FAIL;
+        return errno;
     }
 
     while (1)

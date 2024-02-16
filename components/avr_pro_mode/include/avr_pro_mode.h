@@ -45,7 +45,7 @@
 #define MAX_DELAY_MS 1000
 
 //#define PAGE_SIZE_MAX 24 * 1024
-#define PAGE_SIZE_MAX 128 * 1024
+#define PAGE_SIZE_MAX 100 * 1024
 #define BLOCK_SIZE 256
 
 static const int RX_BUF_SIZE = 1024;
